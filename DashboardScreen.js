@@ -48,18 +48,19 @@ function DashboardScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#121010',
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    padding: 20,
+    padding: 50,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: 'white',
   },
   aboutContainer: {
     backgroundColor: '#f0f0f0',
@@ -81,12 +82,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: 'black',
   },
   button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#5a3d5c',
+    backgroundColor: '#00adb5',
     borderRadius: 10,
   },
   buttonText: {

@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ImageBackground, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import DashboardScreen from './DashboardScreen'; // Asegúrate de que la ruta sea correcta
-import CraftCrudScreen from './CraftCrudScreen'; // Ruta correcta para acceder al CRUD desde el Dashboard
+import DashboardScreen from './DashboardScreen';
+import CraftCrudScreen from './CraftCrudScreen';
 
 // Pantalla principal de inicio de sesión
-function App({ navigation }) {
+function LoginScreen({ navigation }) {
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      // Llamada a la API de autenticación
-      const response = await fetch('http://192.168.137.90:3000/api/users/login', {
+      const response = await fetch('http://10.168.137.90:3000/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, telefono, password }),
@@ -23,7 +22,6 @@ function App({ navigation }) {
       const data = await response.json();
 
       if (data.token) {
-        // Guardar el token y navegar al Dashboard con el token
         navigation.navigate('Dashboard', { token: data.token });
       } else {
         Alert.alert('Error', data.message || 'Inicio de sesión fallido');
@@ -71,6 +69,84 @@ function App({ navigation }) {
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Iniciar sesión</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.registerText}>¿No tienes una cuenta? Regístrate</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
+  );
+}
+
+// Pantalla de registro
+function RegisterScreen({ navigation }) {
+  const [nombre, setNombre] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = async () => {
+    try {
+      const response = await fetch('http://10.168.137.90:3000/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, telefono, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        Alert.alert('Éxito', 'Cuenta creada exitosamente');
+        navigation.navigate('Login'); // Vuelve a la pantalla de inicio de sesión
+      } else {
+        Alert.alert('Error', data.message || 'Registro fallido');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema con el registro');
+      console.error(error);
+    }
+  };
+
+  return (
+    <ImageBackground 
+      source={{ uri: 'https://i.pinimg.com/originals/a2/65/77/a265778fe84bd0256fcafe7eee415b8c.jpg' }} 
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <View style={styles.loginContainer}>
+        <Text style={styles.title}>Registro</Text>
+        
+        <TextInput
+          placeholder="Nombre"
+          placeholderTextColor="#fff"
+          value={nombre}
+          onChangeText={setNombre}
+          style={styles.input}
+        />
+        
+        <TextInput
+          placeholder="Teléfono"
+          placeholderTextColor="#fff"
+          value={telefono}
+          onChangeText={setTelefono}
+          style={styles.input}
+        />
+
+        <TextInput
+          placeholder="Contraseña"
+          placeholderTextColor="#fff"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={styles.input}
+        />
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
+          <Text style={styles.loginButtonText}>Registrarse</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.registerText}>¿Ya tienes una cuenta? Inicia sesión</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -82,7 +158,8 @@ export default function MainApp() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={App} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="CraftCrudScreen" component={CraftCrudScreen} />
       </Stack.Navigator>
@@ -131,5 +208,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  registerText: {
+    color: '#fff',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+    marginTop: 10,
   },
 });
